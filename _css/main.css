@@ -10,7 +10,18 @@ BODY {
 	font-size:.8em;
 	background-color:#0a0a0a
 }
-
+.ibutton-container {
+    display: inline-block;
+    margin-bottom: 6px;
+}
+#ibutton {
+    margin-bottom:10px;
+}
+label {
+    padding: 5px;
+    vertical-align: top;
+    font-size: 1.2em;
+}
 
 #header {
 	z-index:5;
@@ -51,6 +62,7 @@ BODY {
 }
 #signin, #broadcast {
     padding:0px;
+    margin-bottom:10px;
 
 }
 #signin input, #broadcast input {
@@ -71,7 +83,7 @@ BODY {
 }
 #name {
 }
-input#sendname, input#sendquit {
+input[type="button"] {
     background: none repeat scroll 0 0 #999;
     border: 1px solid #FFFFFF;
     border-radius: 3px 3px 3px 3px;
@@ -114,14 +126,21 @@ input#sendname, input#sendquit {
     border: 1px solid #888;
 }
 
-#broadcast div {
+#broadcast div, .box {
 	position:relative;
 	float:left;
-	width:40%;
+	width:43%;
 	padding:10px;	
 	min-height:160px
 }
-
+.box {
+    color:#FFF;
+}
+.box h3 {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    border-bottom: 1px solid white;
+}
 #broadcast span {
 	display:block;
 	text-overflow: clip;

@@ -11,8 +11,12 @@
 
     <link rel="stylesheet" type="text/css" href="./_css/reset.css">
     <link rel="stylesheet" type="text/css" href="./_css/main.css">
+    <link rel="stylesheet" type="text/css" href="./_css/jquery.ibutton.min.css"/>
     
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="./_js/jquery.easing.1.3.js"></script>
+	<script type="text/javascript" src="./_js/jquery.ibutton.min.js"></script>
+
 	<script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript">
     
@@ -40,8 +44,10 @@
         
         $(document).ready(function() {
             $('#broadcast').hide();
+
+			$(':checkbox').iButton();
             
-            $('#sendname').click( function() {
+            $('#begin').click( function() {
                 $('#signin').hide();
                 $('#broadcast').show();
                 
@@ -122,7 +128,7 @@
 	                'gr': parseFloat(arGamma),
 	                's': stabilize };
             
-			document.getElementById("x").innerHTML = "X: " + ax;
+			/*document.getElementById("x").innerHTML = "X: " + ax;
     		document.getElementById("y").innerHTML = "Y: " + ay;
 			document.getElementById("z").innerHTML = "Z: " + az;
 			document.getElementById("i").innerHTML = "I: " + ai;
@@ -131,7 +137,7 @@
 			document.getElementById("gr").innerHTML = "arG: " + arGamma;
 			document.getElementById("a").innerHTML = "Alpha: " + alpha;
 			document.getElementById("b").innerHTML = "Beta: " + beta;
-			document.getElementById("g").innerHTML = "Gamma: " + gamma;
+			document.getElementById("g").innerHTML = "Gamma: " + gamma;*/
 	
 	        if (stabilize == 1) {
 				stabilize = 0;  // reset stabilization request
@@ -147,14 +153,40 @@
       <h2></h2>
     </div>
     <div id="signin">
-        <input id="name" />
-        <input id="sendname" type="button"  value="Play." />
+        <!--<input id="name" />-->
+        <div id="ibutton">
+	        <div class="box" id="accel">
+	        	<h3 id="accelHead" class="head">Acceleration</h3>
+		        <label for="x">X:</label> <input type="checkbox" id="x" />
+		        <br class="clear" />
+				<label for="y">Y:</label> <input type="checkbox" id="y" />
+				<br class="clear" />
+				<label for="z">Z:</label> <input type="checkbox" id="z" />
+				<br class="clear" />
+				<h3 id="accelHead" class="head">Rotation Rate</h3>
+		        <label for="ar">aR:</label> <input type="checkbox" id="ar" />
+		        <br class="clear" />
+				<label for="br">bR:</label> <input type="checkbox" id="br" />
+				<br class="clear" />
+				<label for="gr">gR:</label> <input type="checkbox" id="gr" />
+			</div>
+			<div class="box" id="gyro">
+	        	<h3 id="accelHead" class="head">Gyroscope</h3>
+		        <label for="a">Alpha:</label> <input type="checkbox" checked="checked" id="a" />
+		        <br class="clear" />
+				<label for="b">Beta:</label> <input type="checkbox" checked="checked" id="b" />
+				<br class="clear" />
+				<label for="g">Gamma:</label> <input type="checkbox" checked="checked" id="g" />
+			</div>
+		</div>
+		<input id="begin" type="button"  value="Begin." />
     </div>
     <div id="broadcast">
-      <div class="box" id="accel"> <span class="head">Accelerometer</span> <span id="x"></span> <span id="y"></span> <span id="z"></span> <span id="i"></span> <span id="ar"></span> <span id="br"></span> <span id="gr"></span> </div>
-      <div class="box" id="gyro"> <span class="head">Gyroscope</span> <span id="a"></span> <span id="b"></span> <span id="g"></span> </div>
+      <!--<div class="box" id="accel"> <span class="head">Accelerometer</span> <span id="x"></span> <span id="y"></span> <span id="z"></span> <span id="i"></span> <span id="ar"></span> <span id="br"></span> <span id="gr"></span> </div>
+      <div class="box" id="gyro"> <span class="head">Gyroscope</span> <span id="a"></span> <span id="b"></span> <span id="g"></span> </div>-->
       <br class="clear" />
       <input id="sendquit" type="button"  value="Disconnect" />
+      <input id="sendsave" type="button"  value="Disconnect and Save Screen" />
     </div>
 </body>
 </html>

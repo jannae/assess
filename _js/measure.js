@@ -12,7 +12,7 @@ var chartData = {
     g: []
 };
 
-var totalPoints = 100;
+var freq = 100;
 
 $(document).ready(function() {
     var bot = document.getElementById('sources').offsetHeight;
@@ -23,7 +23,7 @@ $(document).ready(function() {
     var cnvH = window.innerHeight - bot - top;
     console.log(cnvW-pad+', '+cnvH-pad);
     
-    //totalPoints = cnvW;
+    //freq = cnvW;
     
     $('#chart').width(cnvW).height(cnvH);
     
@@ -68,7 +68,7 @@ function setNew(item, d) {
 
 function clearData() {
     // fill remaining array empty elements with zeros. fill it up.
-    while (chartData.g.length < totalPoints) {
+    while (chartData.g.length < freq) {
         chartData.a.push(0);
         chartData.b.push(0);
         chartData.g.push(0);
@@ -116,7 +116,7 @@ socket.on('mobileData', function(username, data){
     chart.setData([{                                                                                                                      
         label:'Alpha',
         data: setNew('a', iosData['alpha']),
-        lines: { show: true, fill: true },
+        lines: { show: true, fill: false },
         color:"rgb(200,0,0)",
         },{
         label:'Beta',
@@ -125,7 +125,7 @@ socket.on('mobileData', function(username, data){
         color:"rgb(0,0,200)",
         },{
         label:'Gamma',
-        data: setNew('a', iosData['gamma']),
+        data: setNew('g', iosData['gamma']),
         lines: { show: true, fill: false },
         color:"rgb(0,200,0)",
     }]);
