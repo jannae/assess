@@ -22,45 +22,55 @@ var chartData = {
 var thresh = {};
 
 var freq = 100;
-var xAxMin = 0;
-var xAxMax = freq;
 var yAxMin = -400;
 var yAxMax = 400;
 
 $(document).ready(function() {
+    $('#mainContent').hide();
+    
     var bot = document.getElementById('sources').offsetHeight;
     var top = document.getElementById('header').offsetHeight;
     
     document.getElementById('printData').style.top = top+'px';
     var cnvW = window.innerWidth;
-    var cnvH = window.innerHeight - bot - top;
-    console.log(cnvW-pad+', '+cnvH-pad);
+    var cnvH = window.innerHeight - (bot + top);
+    $('#chart').width(cnvW).height(cnvH);//.css('top',top+'px');
+    $('#config').width(cnvW).height(cnvH);//.css('top',top+'px');
     
-    //freq = cnvW;
+    //console.log(cnvW-pad+', '+cnvH-pad);
     
-    $('#chart').width(cnvW).height(cnvH); 
+    $('#begin').click( function() {
+        $('#config').hide();
+        $('#mainContent').show();
+        
+        yAxMax = parseInt($('#ymax').val());
+        yAxMin = parseInt($('#ymin').val());
+        freq = parseInt($('#freq').val());
     
-    // soundBeep = document.getElementById('beep');
-
-    // setup plot
-    var defaultOptions = {
-        series: {
-            color: 'rgb(255,255,255)',
-            shadowSize: 0,
-        },  // drawing is faster without shadows
-        yaxis: {
-            min: yAxMin,
-            max: yAxMax
-        },
-        xaxis: {
-            min: xAxMin,
-            max: xAxMax,
-            show: false
-        }
-    };
-
-    //call Flot plot
-    chart = $.plot($('#chart'), [clearData()], defaultOptions);
+        //freq = cnvW;
+        
+        $('#chart').width(cnvW).height(cnvH); 
+        
+        // soundBeep = document.getElementById('beep');
+    
+        // setup plot
+        var defaultOptions = {
+            series: {
+                color: 'rgb(255,255,255)',
+                shadowSize: 0,
+            },  // drawing is faster without shadows
+            yaxis: {
+                min: yAxMin,
+                max: yAxMax
+            },
+            xaxis: {
+                show: false
+            }
+        };
+    
+        //call Flot plot
+        chart = $.plot($('#chart'), [clearData()], defaultOptions);
+    });
 });
 
 // function threshold(id,h,l) {
@@ -86,7 +96,7 @@ function setNew(item, d) {
 
 function clearData() {
     // fill remaining array empty elements with zeros. fill it up.
-    while (chartData.g.length < freq) {
+    while (chartData.x.length < freq) {
         chartData.x.push(0);
         chartData.y.push(0);
         chartData.z.push(0);
@@ -100,8 +110,8 @@ function clearData() {
 
     //this array is just to prefill the chart before any activity takes place.
     var res = [];
-    for (var i = 0; i < chartData.g.length; ++i){
-        res.push([i, chartData.g[i]]);
+    for (var i = 0; i < chartData.x.length; ++i){
+        res.push([i, chartData.x[i]]);
     }
     return res;
 }
@@ -186,7 +196,7 @@ socket.on('mobileData', function(username, data){
         label:'Gamma',
         data: setNew('g', iosData['g']),
         lines: { show: dataShow['g'], fill: false },
-        color: lineColor['c'],
+        color: lineColor['g'],
     }]);
     
     chart.draw();

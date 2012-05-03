@@ -65,23 +65,38 @@ label {
     margin-bottom:10px;
 
 }
-#signin input, #broadcast input {
+#signin input, #broadcast input, #config input, #config label {
     display:block;
     height:20px;
 	border:0;
 	padding:4px 8px;
-    width:240px;
+    width:260px;
     height:40px;
-    font-size: 24px;
+    font-size: 22px;
     margin:10px auto;
 }
-#signin input {
-     margin: 30px auto;
+#signin input, #config input {
     border-radius: 3px 3px 3px 3px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
     border: 1px solid #999;
+    display: block;
 }
-#name {
+input#name {
+    display: inline-block;
+    width:190px;
+    height:32px;
+}
+input#begin {
+    
+}
+
+label[for="name"], label[for="ymax"], label[for="ymin"], label[for="freq"] {
+    color:#FFF;
+    display: inline-block;
+    font-size: 22px;
+    vertical-align: baseline;
+    margin-left: 15px;
+    
 }
 input[type="button"] {
     background: none repeat scroll 0 0 #999;
@@ -105,9 +120,10 @@ input[type="button"] {
     position:absolute;
 	right:0;
 	color:#FFF;
-	background-color: rgba(255, 255, 255,0.5);
+	background-color: rgba(255, 255, 255,0.8);
 	padding:10px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1)
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    margin:5px
 }
 #worldData {
     position:absolute;

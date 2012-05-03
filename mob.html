@@ -36,6 +36,7 @@
 	    var beta = 0;
 	    var gamma = 0;
 	    var stabilize = 0;
+        var colors = ['rgb(192,0,0)', 'rgb(255,192,0)', 'rgb(247,150,70)', 'rgb(192,80,77)', 'rgb(79,129,189)', 'rgb(146,208,80)', 'rgb(0,176,240)', 'rgb(112,48,160)', 'rgb(174, 74, 194)', 'rgb(255, 255, 255)', 'rgb(128,100,162)', 'rgb(75,172,198)', 'rgb(238,236,225)']
         
         $(document).ready(function() {
             $('#broadcast').hide();
@@ -48,10 +49,12 @@
                 
 				var checks = {};
 				var color = {};
-				
+				var count = 0;
 				$('input[type="checkbox"]').each(function() {
 					checks[$(this).val()] = $(this).is(':checked');
-					color[$(this).val()] = 'rgb('+parseInt(Math.random()*255)+','+parseInt(Math.random()*255)+','+parseInt(Math.random()*255)+')';
+					color[$(this).val()] = colors[count];
+                    //color[$(this).val()] = 'rgb('+parseInt(Math.random()*255)+','+parseInt(Math.random()*255)+','+parseInt(Math.random()*255)+')';
+                    count++;
 				});
 
 				userdata = checks;			
@@ -154,7 +157,7 @@
       <h2></h2>
     </div>
     <div id="signin">
-        Name: <input id="name" />
+        <label for="name">Name:</label> <input id="name" />
         <div id="ibutton">
 	        <div class="box" id="accel">
 	        	<h3 id="accelHead" class="head">Acceleration</h3>
@@ -180,14 +183,16 @@
 				<label for="g">Gamma:</label> <input type="checkbox" checked="checked" value="g" id="g" />
 			</div>
 		</div>
-		<input id="begin" type="button"  value="Begin." />
+		<input id="begin" type="button"  value="Begin" />
+        <br class="clear" />
     </div>
     <div id="broadcast">
       <!--<div class="box" id="accel"> <span class="head">Accelerometer</span> <span id="x"></span> <span id="y"></span> <span id="z"></span> <span id="i"></span> <span id="ar"></span> <span id="br"></span> <span id="gr"></span> </div>
-      <div class="box" id="gyro"> <span class="head">Gyroscope</span> <span id="a"></span> <span id="b"></span> <span id="g"></span> </div>-->
-      <br class="clear" />
+      <div class="box" id="gyro"> <span class="head">Gyroscope</span> <span id="a"></span> <span id="b"></span> <span id="g"></span> </div>
+      <br class="clear" />-->
       <input id="sendquit" type="button"  value="Disconnect" />
       <input id="sendsave" type="button"  value="Disconnect and Save Screen" />
+      <br class="clear" />
     </div>
 </body>
 </html>

@@ -18,11 +18,17 @@
 	    <body>
 		<div id="header"><img src="./_img/iphone.png" width="75"/><h1>http://jann.ae/measure</h1></div>
 		<div id="config">
-			<input id="name" />
+			<label for="ymax">High Y Value:</label> <input id="ymax" value="400" />
+            <br class="clear" />
+            <label for="ymin">Low Y Value:</label> <input id="ymin" value="-400" />
+            <br class="clear" />
+            <label for="freq">Frequency:</label> <input id="freq" value="100" />
+            <br class="clear" />
+            <input id="begin" type="button"  value="Begin Charting" />
 		</div>
-		<div id="mainContent">
-			<div id="printData"></div>
+		<div id="mainContent">			
             <div class="graph" id="chart">hello? chart?</div>
+            <div id="printData"></div>
 			<!-- style="width:600px;height:400px;"
             <canvas id="run">
 				<p>Your browser does not support the canvas tag.</p>
@@ -33,7 +39,7 @@
             -->
 	    </div>
         <div id="sources">Source code: <a href="https://github.com/jannae/measure">Github Repo</a> | 
-        	Built with <a href="http://processing.org" title="Processing">Processing</a>, <a href="http://processingjs.org" title="Processing.js">Processing.js</a> and <a href="http://jquery.com/" title="Processing.js">jQuery</a></div>
+        	Built with <a href="http://nodejs.org/" title="Node.js">Node.js</a>, <a href="http://socket.io/" title="Socket.io">Socket.io</a>, <a href="http://code.google.com/p/flot/" title="flot.js">flot.js</a> and <a href="http://jquery.com/" title="jQuery">jQuery</a></div>
         <audio id="beep">
         	<source src="media/audio/beep.mp3"></source>
         	<source src="media/audio/beep.wav"></source>
