@@ -19,7 +19,13 @@ var chartData = {
     g: []
 };
 
+var thresh = {};
+
 var freq = 100;
+var xAxMin = 0;
+var xAxMax = freq;
+var yAxMin = -400;
+var yAxMax = 400;
 
 $(document).ready(function() {
     var bot = document.getElementById('sources').offsetHeight;
@@ -32,25 +38,23 @@ $(document).ready(function() {
     
     //freq = cnvW;
     
-    $('#chart').width(cnvW).height(cnvH);
+    $('#chart').width(cnvW).height(cnvH); 
     
-    //$('#chart').attr('width',cnvW).attr('height',cnvH);
-    
-    // setup control widget
-    //soundBeep = document.getElementById('beep');
+    // soundBeep = document.getElementById('beep');
 
     // setup plot
     var defaultOptions = {
         series: {
             color: 'rgb(255,255,255)',
             shadowSize: 0,
-        },
-        // drawing is faster without shadows
+        },  // drawing is faster without shadows
         yaxis: {
-            min: -400,
-            max: 400
+            min: yAxMin,
+            max: yAxMax
         },
         xaxis: {
+            min: xAxMin,
+            max: xAxMax,
             show: false
         }
     };
@@ -58,6 +62,13 @@ $(document).ready(function() {
     //call Flot plot
     chart = $.plot($('#chart'), [clearData()], defaultOptions);
 });
+
+// function threshold(id,h,l) {
+//     thresh[id] = { 'h' : h, 'l' : l };
+//     thresh.push(thresh[id]);
+//     console.log(thresh);
+//     return thresh;
+// }
 
 function setNew(item, d) {
     if (chartData[item].length > 0) {
@@ -126,8 +137,6 @@ socket.on('mobileData', function(username, data){
         if(dataShow[key] == true) {
             divTxt += '<div id="print-'+key+'" style="color: '+lineColor[key]+'">'+key+' : ' + value + '</div>';
         }
-        //$('#print-'+key).css('color',lineColor[key]);
-
         console.log('#print-'+key+': '+lineColor[key]);
     });
     
@@ -181,22 +190,15 @@ socket.on('mobileData', function(username, data){
     }]);
     
     chart.draw();
-    
-    // nX = iosData['x'];
-    // nY = iosData['y'];
-    // nZ = iosData['z'];
-    // //r = abs(nZ)*10;  // possibly for 3D effect?
-    
-    // gA = iosData['a'];
-    // gB = iosData['b'];
-    // gG = iosData['g'];
-    
-    // arA = iosData['ar'] / 100;
-    // arB = iosData['br'] / 100;
-    // arG = iosData['gr'] / 100;
-    
-    // s = iosData['s'];
-    
+
+    // if (data.data.x > 7 || data.data.x < -7) {
+    //     console.log('triggering x');
+    //     //command to play audio
+    //     soundBeep.play();
+    // } else {
+    //     //pause audio if values aren't outside of the threshold
+    //     soundBeep.pause();
+    // }
 });
 
 socket.on('end', function(username, data){
