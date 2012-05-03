@@ -9,135 +9,27 @@
     <link rel="stylesheet" type="text/css" href="./_css/reset.css">
     <link rel="stylesheet" type="text/css" href="./_css/main.css">
     
+    <script src="/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" language="javascript" src="./_js/smoothie.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
-    
-    <script type="text/javascript">
-    var socket = io.connect();
-    var iosData = {};
-    var socketData = {};
-    var users = {};
-    var userCol = {};
-    var nX, nY, nZ, gA, gB, gG, arA, arB, arG;
-    
-    socket.on('updateusers', function(data) {
-        $('#printData').empty();
-    	$.each(data, function(key, value) {
-            users[key] = value;
-            $('<div/>', {'id' : 'data-'+value } ).appendTo('#printData');
-		});
-	});
-    
-    socket.on('useradded', function(username, data){
-        $.each(data, function(key, value){
-            userCol[key] = value;
-        });
-        $("#data-"+username).css("color","rgb("+parseInt(userCol['r']*255)+","+parseInt(userCol['g']*255)+","+parseInt(userCol['b']*255)+")");
-    });
-
-    socket.on('mobileData', function(username, data){
-        var divTxt  = "<p>Tracking : " + username + "</p>";
-        
-        $.each(data, function(key, value){
-            iosData[key] = value;
-            console.log(key + ': '+value);
-            divTxt += "<p>"+key+" : " + value + "</p>";
-        });
-        
-        $('#data-'+username).html(divTxt);
-        
-        nX = iosData['x'];
-        nY = iosData['y'];
-        nZ = iosData['z'];
-        //r = abs(nZ)*10;  // possibly for 3D effect?
-        
-        gA = iosData['a'];
-        gB = iosData['b'];
-        gG = iosData['g'];
-        
-        arA = iosData['ar'] / 100;
-        arB = iosData['br'] / 100;
-        arG = iosData['gr'] / 100;
-        
-        s = iosData['s'];
-    });
-    
-    socket.on('end', function(username, data){
-        $.each(iosData, function(key, value){
-            iosData[key] = 0;
-        });
-        console.log(iosData);
-    });
-    
-    $(document).ready(function() {
-        var bot = document.getElementById('sources').offsetHeight;
-        var top = document.getElementById('header').offsetHeight;
-        var cnvW = window.innerWidth;
-        var cnvH = window.innerHeight - bot - top;
-        
-        document.getElementById('printData').style.top = top+'px';
-        $('#run').attr('width',cnvW).attr('height',cnvH);
-        
-        var line1 = new TimeSeries();
-        var line2 = new TimeSeries();
-        var line3 = new TimeSeries();
-        
-        setInterval(function() {
-            line1.append(new Date().getTime(), gA);
-            line2.append(new Date().getTime(), gB);
-            line3.append(new Date().getTime(), gG);
-        }, 10);
-
-        var smoothie = new SmoothieChart({
-            grid: { 
-                strokeStyle: 'rgb(150, 150, 150)', 
-                lineWidth: 1, 
-                millisPerLine: 2000, 
-                verticalSections: 4 
-            }, labels: { 
-                fillStyle:'rgb(255, 255, 0)' 
-            }
-        });
-        smoothie.addTimeSeries(line1, { 
-            strokeStyle: 'rgb(0, 255, 0)', 
-            //fillStyle: 'rgba(0, 255, 0, 0.4)', 
-            lineWidth: 3 
-        });
-        smoothie.addTimeSeries(line2, { 
-            strokeStyle: 'rgb(255, 0, 255)', 
-            //fillStyle: 'rgba(255, 0, 255, 0.3)', 
-            lineWidth: 3 
-        });
-        smoothie.addTimeSeries(line3, { 
-            strokeStyle: 'rgb(0, 255, 255)', 
-            //fillStyle: 'rgba(255, 0, 255, 0.3)', 
-            lineWidth: 3 
-        });
-        smoothie.streamTo(document.getElementById('run'), 10);
-    });
-    
-    function clearData() {
-        $.each(data, function(key, value){
-            iosData[key] = 0;
-        });
-    }
-</script>
-
-	<!--[if IE]><script language="javascript" type="text/javascript" src="./_js/excanvas.js"></script><![endif]-->
+    <script type="text/javascript" language="javascript" src="./_js/jquery.flot.js"></script>
+    <script type="text/javascript" language="javascript" src="./_js/measure.js"></script>
+	
 	</head>
 	    <body>
 		<div id="header"><img src="./_img/iphone.png" width="75"/><h1>http://jann.ae/measure</h1></div>
 		<div id="mainContent">
 			<div id="printData"></div>
-			<canvas id="run">
+            <div class="graph" id="chart">hello? chart?</div>
+			<!-- style="width:600px;height:400px;"
+            <canvas id="run">
 				<p>Your browser does not support the canvas tag.</p>
 			</canvas>
 			<noscript>
 				<p>JavaScript is required to view the contents of this page.</p>
 			</noscript>
-    <div id="sources">Source code: <a href="https://github.com/jannae/measure">Github Repo</a> | 
-    		Built with <a href="http://processing.org" title="Processing">Processing</a>, <a href="http://processingjs.org" title="Processing.js">Processing.js</a> and <a href="http://jquery.com/" title="Processing.js">jQuery</a></div>
+            -->
 	    </div>
+                <div id="sources">Source code: <a href="https://github.com/jannae/measure">Github Repo</a> | 
+        	Built with <a href="http://processing.org" title="Processing">Processing</a>, <a href="http://processingjs.org" title="Processing.js">Processing.js</a> and <a href="http://jquery.com/" title="Processing.js">jQuery</a></div>
 	</body>
 </html>

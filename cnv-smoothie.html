@@ -16,6 +16,7 @@
     <script type="text/javascript">
     var socket = io.connect();
     var iosData = {};
+    var socketData = {};
     var users = {};
     var userCol = {};
     var nX, nY, nZ, gA, gB, gG, arA, arB, arG;
@@ -27,23 +28,45 @@
             $('<div/>', {'id' : 'data-'+value } ).appendTo('#printData');
 		});
 	});
+    
+    socket.on('useradded', function(username, data){
+        $.each(data, function(key, value){
+            userCol[key] = value;
+        });
+        $("#data-"+username).css("color","rgb("+parseInt(userCol['r']*255)+","+parseInt(userCol['g']*255)+","+parseInt(userCol['b']*255)+")");
+    });
 
-    socket.on('update', function(username, userdata, data){
-        var divTxt  = "<p>Blob : " + username + "</p>";
+    socket.on('mobileData', function(username, data){
+        var divTxt  = "<p>Tracking : " + username + "</p>";
         
         $.each(data, function(key, value){
             iosData[key] = value;
+            console.log(key + ': '+value);
             divTxt += "<p>"+key+" : " + value + "</p>";
         });
         
         $('#data-'+username).html(divTxt);
         
-        $.each(userdata, function(key, value){
-            userCol[key] = value;
-        });
-        $("#data-"+username).css("color","rgb("+parseInt(userCol['r']*255)+","+parseInt(userCol['g']*255)+","+parseInt(userCol['b']*255)+")");
+        nX = iosData['x'];
+        nY = iosData['y'];
+        nZ = iosData['z'];
+        //r = abs(nZ)*10;  // possibly for 3D effect?
         
-        socketData();
+        gA = iosData['a'];
+        gB = iosData['b'];
+        gG = iosData['g'];
+        
+        arA = iosData['ar'] / 100;
+        arB = iosData['br'] / 100;
+        arG = iosData['gr'] / 100;
+        
+        s = iosData['s'];
+    });
+    
+    socket.on('end', function(username, data){
+        $.each(iosData, function(key, value){
+            iosData[key] = 0;
+        });
         console.log(iosData);
     });
     
@@ -55,15 +78,12 @@
         
         document.getElementById('printData').style.top = top+'px';
         $('#run').attr('width',cnvW).attr('height',cnvH);
-        console.log(cnvW+', '+cnvH);
         
         var line1 = new TimeSeries();
         var line2 = new TimeSeries();
         var line3 = new TimeSeries();
         
         setInterval(function() {
-            socketData();
-            console.log(nX+','+nY);
             line1.append(new Date().getTime(), gA);
             line2.append(new Date().getTime(), gB);
             line3.append(new Date().getTime(), gG);
@@ -97,21 +117,10 @@
         smoothie.streamTo(document.getElementById('run'), 10);
     });
     
-    function socketData() {
-        nX = iosData['x'];
-        nY = iosData['y'];
-        nZ = iosData['z'];
-        //r = abs(nZ)*10;  // possibly for 3D effect?
-        
-        gA = iosData['a'];
-        gB = iosData['b'];
-        gG = iosData['g'];
-        
-        arA = iosData['ar'] / 100;
-        arB = iosData['br'] / 100;
-        arG = iosData['gr'] / 100;
-        
-        s = iosData['s'];
+    function clearData() {
+        $.each(data, function(key, value){
+            iosData[key] = 0;
+        });
     }
 </script>
 

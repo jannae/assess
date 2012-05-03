@@ -77,9 +77,12 @@
         
         function sockexit() {
             socket.disconnect();
+            window.location.reload();
+            /*
             $('#signin').show();
             $('#broadcast').hide();
             $('#header h2').empty();
+            */
         }
 	
 	    function ondeviceorientation(event) {
@@ -111,9 +114,9 @@
 	                'y': parseFloat(ay),
 	                'z': parseFloat(az),
                     'i': parseFloat(ai),
-	                'a': parseFloat(alpha),
-	                'b': parseFloat(beta),
-	                'g': parseFloat(gamma),
+	                'alpha': parseFloat(alpha),
+	                'beta': parseFloat(beta),
+	                'gamma': parseFloat(gamma),
 	                'ar': parseFloat(arAlpha),
 	                'br': parseFloat(arBeta),
 	                'gr': parseFloat(arGamma),

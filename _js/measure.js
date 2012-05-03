@@ -1,168 +1,159 @@
 var socket = io.connect();
 var iosData = {};
+var socketData = {};
+var users = {};
+var userCol = {};
+var nX, nY, nZ, gA, gB, gG, arA, arB, arG;
+var pad = 20;
 
-int bot = document.getElementById('sources').offsetHeight;
-int top = document.getElementById('header').offsetHeight;
-int cnvW = window.innerWidth;
-int cnvH = window.innerHeight - bot - top;
+var chartData = {
+    a: [],
+    b: [],
+    g: []
+};
 
-document.getElementById('printData').style.top = top;
+var totalPoints = 100;
 
-socket.on('desktop', function(data) {
-    $.each(data, function(key, value){
-            iosData[key] = parseFloat(value);
-            nX = iosData['x'];
-            nY = iosData['y'];
-            nZ = iosData['z'];
-            //r = abs(nZ)*10;  // possibly for 3D effect?
-            
-            gA = iosData['a'];
-            gB = iosData['b'];
-            gG = iosData['g'];
-            
-            arA = iosData['ar'] / 100;
-            arB = iosData['br'] / 100;
-            arG = iosData['gr'] / 100;
-            
-            s = int(iosData['s']);
-    });            
+$(document).ready(function() {
+    var bot = document.getElementById('sources').offsetHeight;
+    var top = document.getElementById('header').offsetHeight;
+    
+    document.getElementById('printData').style.top = top+'px';
+    var cnvW = window.innerWidth;
+    var cnvH = window.innerHeight - bot - top;
+    console.log(cnvW-pad+', '+cnvH-pad);
+    
+    //totalPoints = cnvW;
+    
+    $('#chart').width(cnvW).height(cnvH);
+    
+    //$('#chart').attr('width',cnvW).attr('height',cnvH);
+    
+    // setup control widget
+    //soundBeep = document.getElementById('beep');
+
+    // setup plot
+    var defaultOptions = {
+        series: {
+            color: 'rgb(255,255,255)',
+            shadowSize: 0,
+        },
+        // drawing is faster without shadows
+        yaxis: {
+            min: -400,
+            max: 400
+        },
+        xaxis: {
+            show: false
+        }
+    };
+
+    //call Flot plot
+    chart = $.plot($('#chart'), [clearData()], defaultOptions);
 });
 
-Mover m;
-float r = 5.0;  //radius of blob
-float edge = r;
-
-int X, Y; // for initial positioning
-int s; // stabilization
-
-int midY = cnvH / 2;
-int quartY = midY / 2;
-int thquartY = midY+quartY;
-
-float nX, nY, nZ, gA, gB, gG, arA, arB, arG;
-
-float gGm = midY;
-
-int s;
-
-
-void setup() {
-    size(cnvW, cnvH);
-	background(10);
-	//strokeWeight(strokeW);
-	frameRate(15);
-	X = 0;
-	Y = cnvH / 2;
-	smooth();
-	m = new Mover(X, Y);
-	m.display(r, midY);
+function setNew(item, d) {
+    if (chartData[item].length > 0) {
+        chartData[item] = chartData[item].slice(1);
+        chartData[item].push(d);
+    }
+    //console.log('setting',d);
+    // zip the generated y values with the x values
+    var res = [];
+    for (var i = 0; i < chartData[item].length; ++i) {
+        res.push([i, chartData[item][i]]); //[x1,y1],[x2,y2],etc
+    }
+    return res;
 }
 
-void draw() { 
-    strokeWeight(1);
-	
-	stroke(60);
-  	line(0, quartY, cnvW, quartY);
-   	line(0, thquartY, cnvW, thquartY);
-   	
-   	stroke(200);	
-	line(0, midY, cnvW, midY);
+function clearData() {
+    // fill remaining array empty elements with zeros. fill it up.
+    while (chartData.g.length < totalPoints) {
+        chartData.a.push(0);
+        chartData.b.push(0);
+        chartData.g.push(0);
+    }
 
-	/*
-	noStroke();
-	fill(10, 40);
-	rect(0, 0, width, height);
-	*/
-	
-	strokeWeight(strokeW);
-	iphoneControl();
+    //this array is just to prefill the chart before any activity takes place.
+    var res = [];
+    for (var i = 0; i < chartData.g.length; ++i){
+        res.push([i, chartData.g[i]]);
+    }
+    return res;
 }
 
-void iphoneControl() {
-	
-printData(nX, nY, nZ, gA, gB, gG, arA, arB, arG, s);
-    	
-	if (s == 1) {
-		background(10,0.5);
-	}
-  	
-	PVector moved = new PVector(nX,0);
-	PVector accel = new PVector(0,0);
-	
-	m.move(moved);
-	m.update();
-	m.display(r, gGm);
-	m.checkEdges();
-}
+function esc(msg) {
+    return msg.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+};
+    
 
-class Mover {
-	
-	PVector loc;
-	PVector vel;
-	PVector acc;
-	float mass;
-	
-	Mover(float x, float y) {
-		loc = new PVector(x, y);
-		vel = new PVector(0, 0);
-		acc = new PVector(0, 0);
-		mass = 10;
-	}
-	
-	void applyForce(PVector force) {
-		PVector f = PVector.div(force, mass);
-		acc.add(f);
-	}
-	
-	void move(PVector move) {
-		loc.add(move);
-	}
-	
-	void update() {
-		vel.add(acc);
-		loc.add(vel);
-		acc.mult(0);
-	}
-	
-	void display(float r) {
-		fill(121, 0, 184);
-		stroke(255);
-		ellipse(loc.x, loc.y, r, r);
-	}
-	
-	void checkEdges() {
-		if (loc.x > width-edge) {
-			vel.x *= -1;
-			loc.x = width-edge;
-		} else if (loc.x < edge) {
-			vel.x *= -1;
-			loc.x = edge;
-		}
-		if (loc.y > height-edge) {
-			vel.y *= -1;
-			loc.y = height-edge;
-		} else if (loc.y < edge) {
-			vel.y *= -1;
-			loc.y = edge;
-		}
-	}
-}
+socket.on('updateusers', function(data) {
+    $('#printData').empty();
+    $.each(data, function(key, value) {
+        users[key] = value;
+        $('<div/>', {'id' : 'data-'+value } ).appendTo('#printData');
+    });
+});
 
-void printData(float x, float y, float z, float a, float b, float g, float alph, float bet, float gam, int stab) {
-	divTxt  = "<p>X : " + x + "</p>";
-	divTxt += "<p>Y : " + y + "</p>";
-	divTxt += "<p>Z : " + z + "</p>";
-	divTxt += "<p>A : " + a + "</p>";
-	divTxt += "<p>B : " + b + "</p>";
-	divTxt += "<p>G : " + g + "</p>";
-	divTxt += "<p>arA : " + alph + "</p>";
-	divTxt += "<p>arB : " + bet + "</p>";
-	divTxt += "<p>arG : " + gam + "</p>";
-	if (stab == 1) { divTxt += "<p>Stabilized!</p>"; }
-	document.getElementById("printData").innerHTML = divTxt;
-} 
+socket.on('useradded', function(username, data){
+    $.each(data, function(key, value){
+        userCol[key] = value;
+    });
+    $("#data-"+username).css("color","rgb("+parseInt(userCol['r']*255)+","+parseInt(userCol['g']*255)+","+parseInt(userCol['b']*255)+")");
+});
 
-/* notes for later, gator: 
-	http://ditio.net/2008/11/04/php-string-to-hex-and-hex-to-string-functions/
-	http://www.html5rocks.com/en/mobile/touch/
-*/
+socket.on('mobileData', function(username, data){
+    var divTxt  = "<p>Tracking : " + username + "</p>";
+    
+    $.each(data, function(key, value){
+        iosData[key] = value;
+        divTxt += "<p>"+key+" : " + value + "</p>";
+        
+    });
+    
+    $('#data-'+username).html(divTxt);
+    
+    chart.setData([{                                                                                                                      
+        label:'Alpha',
+        data: setNew('a', iosData['alpha']),
+        lines: { show: true, fill: true },
+        color:"rgb(200,0,0)",
+        },{
+        label:'Beta',
+        data: setNew('b', iosData['beta']),
+        lines: { show: true, fill: false },
+        color:"rgb(0,0,200)",
+        },{
+        label:'Gamma',
+        data: setNew('a', iosData['gamma']),
+        lines: { show: true, fill: false },
+        color:"rgb(0,200,0)",
+    }]);
+    
+    chart.draw();
+    
+    nX = iosData['x'];
+    nY = iosData['y'];
+    nZ = iosData['z'];
+    //r = abs(nZ)*10;  // possibly for 3D effect?
+    
+    gA = iosData['alpha'];
+    gB = iosData['beta'];
+    gG = iosData['gamma'];
+    
+    arA = iosData['ar'] / 100;
+    arB = iosData['br'] / 100;
+    arG = iosData['gr'] / 100;
+    
+    s = iosData['s'];
+    
+});
+
+socket.on('end', function(username, data){
+    $.each(iosData, function(key, value){
+        iosData[key] = 0;
+    });
+    chart.setData([clearData()]);
+    chart.draw();
+    console.log(iosData);
+});

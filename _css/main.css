@@ -1,3 +1,8 @@
+
+html, body {
+        height: 100%; /* make the percentage height on placeholder work */
+}
+    
 BODY {
     margin:0;
 	top:0;
@@ -5,6 +10,7 @@ BODY {
 	font-size:.8em;
 	background-color:#0a0a0a
 }
+
 
 #header {
 	z-index:5;
