@@ -70,14 +70,14 @@ io.sockets.on('connection', function(socket) {
 	});
     
     // when the client emits 'adduser', this listens and executes
-    socket.on('adduser', function(username, userdata){
+    socket.on('adduser', function(username, userdata, colors){
     	// we store the username in the socket session for this client
         socket.username = username;
         socket.userdata = userdata;
 		// add the client's username to the global list
 		usernames[username] = username;
 		io.sockets.emit('updateusers', usernames);
-        io.sockets.emit('useradded', username, userdata);
+        io.sockets.emit('useradded', username, userdata, colors);
         
         // echo to client they've connected
 	//	socket.emit('update', username, userdata);

@@ -2,11 +2,18 @@ var socket = io.connect();
 var iosData = {};
 var socketData = {};
 var users = {};
-var userCol = {};
+var dataShow = {};
+var lineColor = {};
 var nX, nY, nZ, gA, gB, gG, arA, arB, arG;
 var pad = 20;
 
 var chartData = {
+    x: [],
+    y: [],
+    z: [],
+    ar: [],
+    br: [],
+    gr: [],
     a: [],
     b: [],
     g: []
@@ -69,6 +76,12 @@ function setNew(item, d) {
 function clearData() {
     // fill remaining array empty elements with zeros. fill it up.
     while (chartData.g.length < freq) {
+        chartData.x.push(0);
+        chartData.y.push(0);
+        chartData.z.push(0);
+        chartData.ar.push(0);
+        chartData.br.push(0);
+        chartData.gr.push(0);
         chartData.a.push(0);
         chartData.b.push(0);
         chartData.g.push(0);
@@ -95,11 +108,13 @@ socket.on('updateusers', function(data) {
     });
 });
 
-socket.on('useradded', function(username, data){
+socket.on('useradded', function(username, data, colors){
     $.each(data, function(key, value){
-        userCol[key] = value;
+        dataShow[key] = value;
     });
-    $("#data-"+username).css("color","rgb("+parseInt(userCol['r']*255)+","+parseInt(userCol['g']*255)+","+parseInt(userCol['b']*255)+")");
+    $.each(colors, function(key, value){
+        lineColor[key] = value;
+    });
 });
 
 socket.on('mobileData', function(username, data){
@@ -107,45 +122,80 @@ socket.on('mobileData', function(username, data){
     
     $.each(data, function(key, value){
         iosData[key] = value;
-        divTxt += "<p>"+key+" : " + value + "</p>";
         
+        if(dataShow[key] == true) {
+            divTxt += '<div id="print-'+key+'" style="color: '+lineColor[key]+'">'+key+' : ' + value + '</div>';
+        }
+        //$('#print-'+key).css('color',lineColor[key]);
+
+        console.log('#print-'+key+': '+lineColor[key]);
     });
     
     $('#data-'+username).html(divTxt);
     
     chart.setData([{                                                                                                                      
+        label:'X-Axis Acceleration',
+        data: setNew('x', iosData['x']),
+        lines: { show: dataShow['x'], fill: false },
+        color: lineColor['x'],
+        },{
+        label:'Y-Axis Acceleration',
+        data: setNew('y', iosData['y']),
+        lines: { show: dataShow['y'], fill: false },
+        color: lineColor['y'],
+        },{
+        label:'Z-Axis Acceleration',
+        data: setNew('z', iosData['z']),
+        lines: { show: dataShow['z'], fill: false },
+        color: lineColor['z'],
+        },{
+        label:'Alpha Acceleration at Rotation',
+        data: setNew('ar', iosData['ar']),
+        lines: { show: dataShow['ar'], fill: false },
+        color: lineColor['ar'],
+        },{
+        label:'Beta Acceleration at Rotation',
+        data: setNew('br', iosData['br']),
+        lines: { show: dataShow['br'], fill: false },
+        color: lineColor['br'],
+        },{
+        label:'Gamma Acceleration at Rotation',
+        data: setNew('gr', iosData['gr']),
+        lines: { show: dataShow['gr'], fill: false },
+        color: lineColor['gr'],
+        },{                                                                                                                    
         label:'Alpha',
-        data: setNew('a', iosData['alpha']),
-        lines: { show: true, fill: false },
-        color:"rgb(200,0,0)",
+        data: setNew('a', iosData['a']),
+        lines: { show: dataShow['a'], fill: false },
+        color: lineColor['a'],
         },{
         label:'Beta',
-        data: setNew('b', iosData['beta']),
-        lines: { show: true, fill: false },
-        color:"rgb(0,0,200)",
+        data: setNew('b', iosData['b']),
+        lines: { show: dataShow['b'], fill: false },
+        color: lineColor['b'],
         },{
         label:'Gamma',
-        data: setNew('g', iosData['gamma']),
-        lines: { show: true, fill: false },
-        color:"rgb(0,200,0)",
+        data: setNew('g', iosData['g']),
+        lines: { show: dataShow['g'], fill: false },
+        color: lineColor['c'],
     }]);
     
     chart.draw();
     
-    nX = iosData['x'];
-    nY = iosData['y'];
-    nZ = iosData['z'];
-    //r = abs(nZ)*10;  // possibly for 3D effect?
+    // nX = iosData['x'];
+    // nY = iosData['y'];
+    // nZ = iosData['z'];
+    // //r = abs(nZ)*10;  // possibly for 3D effect?
     
-    gA = iosData['alpha'];
-    gB = iosData['beta'];
-    gG = iosData['gamma'];
+    // gA = iosData['a'];
+    // gB = iosData['b'];
+    // gG = iosData['g'];
     
-    arA = iosData['ar'] / 100;
-    arB = iosData['br'] / 100;
-    arG = iosData['gr'] / 100;
+    // arA = iosData['ar'] / 100;
+    // arB = iosData['br'] / 100;
+    // arG = iosData['gr'] / 100;
     
-    s = iosData['s'];
+    // s = iosData['s'];
     
 });
 

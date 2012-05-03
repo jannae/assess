@@ -37,29 +37,32 @@
 	    var gamma = 0;
 	    var stabilize = 0;
         
-        //code for random rgb colors
-        var r = Math.random();
-        var g = Math.random();
-        var b = Math.random();
-        
         $(document).ready(function() {
             $('#broadcast').hide();
 
 			$(':checkbox').iButton();
             
             $('#begin').click( function() {
-                $('#signin').hide();
+            	$('#signin').hide();
                 $('#broadcast').show();
+                
+				var checks = {};
+				var color = {};
+				
+				$('input[type="checkbox"]').each(function() {
+					checks[$(this).val()] = $(this).is(':checked');
+					color[$(this).val()] = 'rgb('+parseInt(Math.random()*255)+','+parseInt(Math.random()*255)+','+parseInt(Math.random()*255)+')';
+				});
+
+				userdata = checks;			
                 
                 name = String($('#name').val());
                 name = cleanStr(name);
         		$('#name').val('');
-                
-                userdata = {'r': r, 'g': g, 'b': b};
                                 
-                $('#header h2').html(name).css('color','rgb('+parseInt(r*255)+','+parseInt(g*255)+','+parseInt(b*255)+')');
+                $('#header h2').html(name);
                 
-        		socket.emit('adduser', name, userdata);
+        		socket.emit('adduser', name, userdata, color);
                 
                 window.addEventListener("devicemotion", onDeviceMotion, false);
                 window.addEventListener("deviceorientation", ondeviceorientation, false);
@@ -115,18 +118,16 @@
 	        }
 			    	
 	        var iosjson = {
-	                'go': 1,
 	                'x': parseFloat(ax),
 	                'y': parseFloat(ay),
 	                'z': parseFloat(az),
-                    'i': parseFloat(ai),
-	                'alpha': parseFloat(alpha),
-	                'beta': parseFloat(beta),
-	                'gamma': parseFloat(gamma),
+	                'a': parseFloat(alpha),
+	                'b': parseFloat(beta),
+	                'g': parseFloat(gamma),
 	                'ar': parseFloat(arAlpha),
 	                'br': parseFloat(arBeta),
-	                'gr': parseFloat(arGamma),
-	                's': stabilize };
+	                'gr': parseFloat(arGamma)
+	            };
             
 			/*document.getElementById("x").innerHTML = "X: " + ax;
     		document.getElementById("y").innerHTML = "Y: " + ay;
@@ -157,26 +158,26 @@
         <div id="ibutton">
 	        <div class="box" id="accel">
 	        	<h3 id="accelHead" class="head">Acceleration</h3>
-		        <label for="x">X:</label> <input type="checkbox" id="x" />
+		        <label for="x">X:</label> <input type="checkbox" value="x" id="x" />
 		        <br class="clear" />
-				<label for="y">Y:</label> <input type="checkbox" id="y" />
+				<label for="y">Y:</label> <input type="checkbox" value="y" id="y" />
 				<br class="clear" />
-				<label for="z">Z:</label> <input type="checkbox" id="z" />
+				<label for="z">Z:</label> <input type="checkbox" value="z" id="z" />
 				<br class="clear" />
 				<h3 id="accelHead" class="head">Rotation Rate</h3>
-		        <label for="ar">aR:</label> <input type="checkbox" id="ar" />
+		        <label for="ar">aR:</label> <input type="checkbox" value="ar" id="ar" />
 		        <br class="clear" />
-				<label for="br">bR:</label> <input type="checkbox" id="br" />
+				<label for="br">bR:</label> <input type="checkbox" value="br" id="br" />
 				<br class="clear" />
-				<label for="gr">gR:</label> <input type="checkbox" id="gr" />
+				<label for="gr">gR:</label> <input type="checkbox" value="gr" id="gr" />
 			</div>
 			<div class="box" id="gyro">
 	        	<h3 id="accelHead" class="head">Gyroscope</h3>
-		        <label for="a">Alpha:</label> <input type="checkbox" checked="checked" id="a" />
+		        <label for="a">Alpha:</label> <input type="checkbox" checked="checked" value="a" id="a" />
 		        <br class="clear" />
-				<label for="b">Beta:</label> <input type="checkbox" checked="checked" id="b" />
+				<label for="b">Beta:</label> <input type="checkbox" checked="checked" value="b" id="b" />
 				<br class="clear" />
-				<label for="g">Gamma:</label> <input type="checkbox" checked="checked" id="g" />
+				<label for="g">Gamma:</label> <input type="checkbox" checked="checked" value="g" id="g" />
 			</div>
 		</div>
 		<input id="begin" type="button"  value="Begin." />
