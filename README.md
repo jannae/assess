@@ -1,8 +1,8 @@
-# Measure.
+# Assess.
 
 Final Project for [DIY Biomechanics](http://www.diybiomechanics.com/). (Spring 2012)
 
-iPhone Accelerometer/Gyroscope based movement measuring tool.
+iPhone Accelerometer/Gyroscope based movement assessment tool.
 
 ###Technologies used
 
